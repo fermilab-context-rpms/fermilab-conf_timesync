@@ -3,7 +3,7 @@
 
 Name:		fermilab-conf_timesync
 Version:	1.0
-Release:	5.1%{?dist}
+Release:	6%{?dist}
 Summary:	Configures network time sync for use at Fermilab
 
 # can drop this obsoletes in EL9
@@ -68,8 +68,6 @@ SELFCOPIES=${1:-0}
 if [[ ${SELFCOPIES} -eq 1 ]]; then
     # start chrony
     systemctl enable chronyd.service
-    # setup fetching ntp servers from dns as well as static list
-    /usr/libexec/chrony-helper enable-dnssrv _ntp._udp.fnal.gov
 fi
 
 grep -v '#' /etc/chrony.conf | grep -q 'include /etc/chrony.d/\*.conf'
@@ -79,11 +77,6 @@ fi
 
 %postun chrony -p /usr/bin/bash
 SELFCOPIES=${1:-0}
-
-if [[ ${SELFCOPIES} -eq 0 ]]; then
-    # cleanup fetching ntp servers from dns as well as static list
-    /usr/libexec/chrony-helper disable-dnssrv _ntp._udp.fnal.gov
-fi
 
 
 #####################################################################
@@ -99,7 +92,10 @@ fi
 
 #####################################################################
 %changelog
-* Wed Apr 13 2022 Pat Riehecky <riehecky@fnal.gov> 1.0-5.1
+* Wed Apr 13 2022 Pat Riehecky <riehecky@fnal.gov> 1.0-6
+- Drop SRV units since they no longer exist
+
+* Wed Apr 13 2022 Pat Riehecky <riehecky@fnal.gov> 1.0-5.2
 - Use boolean rich deps
 
 * Wed Mar 16 2022 Pat Riehecky <riehecky@fnal.gov> 1.0-5
