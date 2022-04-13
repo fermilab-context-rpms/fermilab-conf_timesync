@@ -3,7 +3,7 @@
 
 Name:		fermilab-conf_timesync
 Version:	1.0
-Release:	5%{?dist}
+Release:	5.1%{?dist}
 Summary:	Configures network time sync for use at Fermilab
 
 # can drop this obsoletes in EL9
@@ -18,7 +18,7 @@ BuildRequires:	bash coreutils systemd
 BuildArch:	noarch
 
 # Top level package should require software specific packages
-Requires:	%{name}-chrony == %{version}-%{release}
+Requires:	(%{name}-chrony == %{version}-%{release} if chrony)
 
 %description
 This package configures a time daemon correctly for use at Fermilab.
@@ -99,6 +99,9 @@ fi
 
 #####################################################################
 %changelog
+* Wed Apr 13 2022 Pat Riehecky <riehecky@fnal.gov> 1.0-5.1
+- Use boolean rich deps
+
 * Wed Mar 16 2022 Pat Riehecky <riehecky@fnal.gov> 1.0-5
 - Initial build for EL9
 
