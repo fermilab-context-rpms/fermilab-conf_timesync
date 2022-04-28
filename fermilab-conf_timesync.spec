@@ -3,7 +3,7 @@
 
 Name:		fermilab-conf_timesync
 Version:	1.0
-Release:	6%{?dist}
+Release:	7%{?dist}
 Summary:	Configures network time sync for use at Fermilab
 
 # can drop this obsoletes in EL9
@@ -53,7 +53,7 @@ cp %{SOURCE0} chrony/fermilab_timesettings.conf
 echo "### THIS FILE IS MANAGED BY fermilab-conf_fermilab-conf_timesync-chrony ###" > chrony/fermilab_timeservers.conf
 echo "###           YOUR CHANGES HERE WILL BE REVERTED BY THIS PACAKGE        ###" >> chrony/fermilab_timeservers.conf
 for system in %{ntpservers}; do
-    echo "server ${system} iburst" >> chrony/fermilab_timeservers.conf
+    echo "server ${system} prefer iburst" >> chrony/fermilab_timeservers.conf
 done
 
 
@@ -92,6 +92,9 @@ SELFCOPIES=${1:-0}
 
 #####################################################################
 %changelog
+* Thu Apr 28 2022 Pat Riehecky <riehecky@fnal.gov> 1.0-7
+- Set the FNAL servers to prefer
+
 * Wed Apr 13 2022 Pat Riehecky <riehecky@fnal.gov> 1.0-6
 - Drop SRV units since they no longer exist
 
