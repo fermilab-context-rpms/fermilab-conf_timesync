@@ -6,8 +6,9 @@ Version:	1.0
 Release:	7%{?dist}
 Summary:	Configures network time sync for use at Fermilab
 
-# can drop this obsoletes in EL9
+%if 0%{?rhel} < 10
 Obsoletes:	zz_ntp_configure
+%endif
 
 Group:		Fermilab
 License:	GPL
