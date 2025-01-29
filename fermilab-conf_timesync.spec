@@ -1,9 +1,10 @@
 # NTP server list from: RITM0096493 RITM1289210
 %define ntpservers nsntp1.fnal.gov nsntp2.fnal.gov nsntp3.fnal.gov nsntp4.fnal.gov nsntp5.fnal.gov
+%define ntppools ntp.fnal.gov
 
 Name:		fermilab-conf_timesync
 Version:	1.0
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	Configures network time sync for use at Fermilab
 
 %if 0%{?rhel} < 10
@@ -27,16 +28,22 @@ This package configures a time daemon correctly for use at Fermilab.
 At this time the default time servers are listed as:
 %{ntpservers}
 
+At this time the default ntp pools are listed as:
+%{ntppools}
+
 %package chrony
 Summary:	Configures chrony for use at Fermilab
 Requires(post):	policycoreutils coreutils systemd grep
-Requires:	chrony >= 3.0
+Requires:	chrony >= 4.0
 
 %description chrony
 This package configures chrony correctly for use at Fermilab.
 
 At this time the default time servers are listed as:
 %{ntpservers}
+
+At this time the default ntp pools are listed as:
+%{ntppools}
 
 
 %prep
@@ -47,6 +54,9 @@ touch fnal_timeservers.txt
 for system in %{ntpservers}; do
   echo $system >> fnal_timeservers.txt
 done
+for pool in %{ntppools}; do
+  echo $pool >> fnal_ntp_pools.txt
+done
 
 # chrony
 mkdir chrony
@@ -55,6 +65,9 @@ echo "### THIS FILE IS MANAGED BY fermilab-conf_fermilab-conf_timesync-chrony ##
 echo "###           YOUR CHANGES HERE WILL BE REVERTED BY THIS PACAKGE        ###" >> chrony/fermilab_timeservers.conf
 for system in %{ntpservers}; do
     echo "server ${system} prefer iburst" >> chrony/fermilab_timeservers.conf
+done
+for pool in %{ntppools}; do
+    echo "pool ${pool} prefer iburst" >> chrony/fermilab_timeservers.conf
 done
 
 
@@ -85,6 +98,7 @@ SELFCOPIES=${1:-0}
 %files
 %defattr(0644,root,root,0755)
 %doc fnal_timeservers.txt
+%doc fnal_ntp_pools.txt
 
 %files chrony
 %defattr(0644,root,root,0755)
@@ -93,6 +107,9 @@ SELFCOPIES=${1:-0}
 
 #####################################################################
 %changelog
+* Wed Jan 29 2025 Pat Riehecky <riehecky@fnal.gov> 1.0-8
+- Add ntp pool address to source list
+
 * Thu Apr 28 2022 Pat Riehecky <riehecky@fnal.gov> 1.0-7
 - Set the FNAL servers to prefer
 
